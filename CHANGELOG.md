@@ -23,6 +23,7 @@ straightforward as possible.
 
 ### Changed
 - Logic to be more Object oriented for easier approach later
+- Test implementation
 
 
 ## [0.1.0]
