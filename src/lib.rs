@@ -1,6 +1,6 @@
 pub mod file_Searcher;
 
-use clap::Parser;
+use clap::{Parser, Subcommand};
 
 
 fn is_case_insensitive_default() -> bool {
@@ -30,14 +30,26 @@ pub struct Args {
     #[arg(short = 't', long = "file-type")]
     pub file_type: Option<String>,
 
-    /// Max Depth that it will go to
+    /// Max Depth that the engine will search
     #[arg(short = 'M', long = "max-depth")]
     pub max_depth: Option<usize>,
 
-    /// Case Sensitive
+    /// Ignore case
     #[arg(short = 'i', long = "ignore-case", default_value_t = is_case_insensitive_default())]
     pub ignore_case: bool,
 }
 
 
+#[derive(Parser)]
+#[command(author, version, about)]
+pub struct Cli {
+    #[command(subcommand)]
+    pub command: Option<Commands>,
+}
 
+#[derive(Subcommand)]
+pub enum Commands {
+    
+    Version,
+    Search(Args),
+}
