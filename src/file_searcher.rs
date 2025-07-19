@@ -53,12 +53,18 @@ impl FileSearcher {
     ///
     /// `true` if the entry's name contains the target string; otherwise `false`.
     pub fn name_matches(&self, entry: &DirEntry) -> bool {
-        entry
-            .file_name()
-            .to_str()
-            .map(|name| name.contains(&self.args.filename))
-            .unwrap_or(false)
+        if let Some(name) = entry.path().file_name().and_then(|n| n.to_str()) {
+            if self.args.ignore_case {
+                name.to_lowercase().contains(&self.args.filename.to_lowercase())
+            } else {
+                name.contains(&self.args.filename)
+            }
+        } else {
+            false
+        }
     }
+
+    
 
     /// Checks if the file extension matches the user-specified file type (if provided).
     ///
@@ -106,9 +112,7 @@ impl FileSearcher {
     /// Recursively traverses the file system starting from the given path,
     /// and prints out the entries that match the search criteria.
     pub fn run(&self) {
-        println!("Setting Case Insensitive: {}", self.args.ignore_case);
-        println!("Searching for: {}", self.args.filename);
-        println!("Starting in: {}", self.args.path);
+        
         self.search();
     }
 }
