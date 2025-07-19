@@ -19,6 +19,11 @@ straightforward as possible.
  
 ### Fixed
 
+## [0.2.0]
+
+### Changed
+- Logic to be more Object oriented for easier approach later
+
 
 ## [0.1.0]
 
