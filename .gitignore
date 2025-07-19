@@ -1,0 +1,47 @@
+# === Rust specific ===
+/target/
+/Cargo.lock
+
+# If you're publishing a library, you may want to commit Cargo.lock for binaries but not for libs.
+# Remove the line above if this is a binary crate and you want reproducible builds.
+
+# === IDEs and editors ===
+
+# VS Code
+/.vscode/
+/.vscode/*
+
+# JetBrains (CLion, IntelliJ, etc.)
+.idea/
+/*.iml
+
+# Sublime Text
+*.sublime-workspace
+*.sublime-project
+
+# Vim
+*.swp
+*.swo
+
+# Emacs
+*~
+
+# === OS and misc ===
+
+# macOS
+.DS_Store
+
+# Linux
+*~
+
+# Windows
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+
+# Byebug or other debugger history
+.byebug_history
+
+# === Optional cargo folders ===
+/.cargo/
+/**/*.rs.bk

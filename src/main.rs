@@ -9,7 +9,7 @@ struct Args {
     filename: String,
 
     /// The directory to start from
-    #[arg(default_value = ".")]
+    #[arg(short, long, default_value = ".", value_name = "PATH")]
     path: String,
 
     /// Include directories in the search (in addition to files)
