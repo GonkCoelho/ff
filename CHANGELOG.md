@@ -24,6 +24,7 @@ straightforward as possible.
 ## Added
 - Case Insensitive
 - Max depth search
+- Sub Command
 
 ### Changed
 - Logic to be more Object oriented for easier approach later
