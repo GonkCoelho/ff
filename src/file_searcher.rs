@@ -106,6 +106,7 @@ impl FileSearcher {
     /// Recursively traverses the file system starting from the given path,
     /// and prints out the entries that match the search criteria.
     pub fn run(&self) {
+        println!("Setting Case Insensitive: {}", self.args.ignore_case);
         println!("Searching for: {}", self.args.filename);
         println!("Starting in: {}", self.args.path);
         self.search();

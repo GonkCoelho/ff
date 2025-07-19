@@ -3,6 +3,11 @@ pub mod file_Searcher;
 use clap::Parser;
 
 
+fn is_case_insensitive_default() -> bool {
+    cfg!(windows) || cfg!(target_os = "macos")
+}
+
+
 #[derive(Parser, Debug)]
 #[command(author, version, about)]
 pub struct Args {
@@ -27,7 +32,11 @@ pub struct Args {
 
     /// Max Depth that it will go to
     #[arg(short = 'M', long = "max-depth")]
-    max_depth: Option<usize>,
+    pub max_depth: Option<usize>,
+
+    /// Case Sensitive
+    #[arg(short = 'i', long = "ignore-case", default_value_t = is_case_insensitive_default())]
+    pub ignore_case: bool,
 }
 
 

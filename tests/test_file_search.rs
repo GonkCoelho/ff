@@ -1,5 +1,5 @@
 use ff::{Args};
-use ff::file_searcher::{FileSearcher};
+use ff::file_Searcher::{FileSearcher};
 use std::fs::{self, File};
 use tempfile::TempDir;
 use walkdir::WalkDir;
@@ -11,6 +11,8 @@ fn create_searcher(
     include_dirs: bool,
     only_dirs: bool,
     file_type: Option<String>,
+    max_depth: Option<usize>,
+    ignore_case: bool
 ) -> FileSearcher {
     let args = Args {
         filename: filename.to_string(),
@@ -18,6 +20,8 @@ fn create_searcher(
         include_dirs,
         only_dirs,
         file_type,
+        max_depth,
+        ignore_case
     };
     FileSearcher::new(args)
 }
@@ -56,6 +60,8 @@ fn test_new_creates_file_searcher() {
         include_dirs: false,
         only_dirs: false,
         file_type: None,
+        max_depth: None,
+        ignore_case: false
     };
     let searcher = FileSearcher::new(args);
     assert_eq!(searcher.args.filename, "test");
@@ -68,7 +74,7 @@ fn test_new_creates_file_searcher() {
 #[test]
 fn test_files_only_search() {
     let temp_dir = create_test_structure();
-    let searcher = create_searcher("test", temp_dir.path().to_str().unwrap(), false, false, None);
+    let searcher = create_searcher("test", temp_dir.path().to_str().unwrap(), false, false, None, None, false);
 
     let mut matches = Vec::new();
     for entry in WalkDir::new(temp_dir.path()).into_iter().filter_map(Result::ok) {
@@ -93,7 +99,7 @@ fn test_files_only_search() {
 #[test]
 fn test_directories_only_search() {
     let temp_dir = create_test_structure();
-    let searcher = create_searcher("test", temp_dir.path().to_str().unwrap(), false, true, None);
+    let searcher = create_searcher("test", temp_dir.path().to_str().unwrap(), false, true, None, None, false);
 
     let mut matches = Vec::new();
     for entry in WalkDir::new(temp_dir.path()).into_iter().filter_map(Result::ok) {
@@ -118,7 +124,7 @@ fn test_directories_only_search() {
 #[test]
 fn test_file_type_filtering() {
     let temp_dir = create_test_structure();
-    let searcher = create_searcher("test", temp_dir.path().to_str().unwrap(), false, false, Some("txt".to_string()));
+    let searcher = create_searcher("test", temp_dir.path().to_str().unwrap(), false, false, Some("txt".to_string()), None, false);
 
     let mut matches = Vec::new();
     for entry in WalkDir::new(temp_dir.path()).into_iter().filter_map(Result::ok) {
@@ -142,7 +148,7 @@ fn test_file_type_filtering() {
 #[test]
 fn test_include_both_files_and_dirs() {
     let temp_dir = create_test_structure();
-    let searcher = create_searcher("test", temp_dir.path().to_str().unwrap(), true, false, None);
+    let searcher = create_searcher("test", temp_dir.path().to_str().unwrap(), true, false, None, None, false);
 
     let mut matches = Vec::new();
     for entry in WalkDir::new(temp_dir.path()).into_iter().filter_map(Result::ok) {
@@ -158,7 +164,7 @@ fn test_include_both_files_and_dirs() {
 #[test]
 fn test_no_matches() {
     let temp_dir = create_test_structure();
-    let searcher = create_searcher("nonexistent", temp_dir.path().to_str().unwrap(), true, false, None);
+    let searcher = create_searcher("nonexistent", temp_dir.path().to_str().unwrap(), true, false, None, None, false);
 
     let mut matches = Vec::new();
     for entry in WalkDir::new(temp_dir.path()).into_iter().filter_map(Result::ok) {
@@ -173,7 +179,7 @@ fn test_no_matches() {
 #[test]
 fn test_case_sensitive_search() {
     let temp_dir = create_test_structure();
-    let searcher = create_searcher("Test", temp_dir.path().to_str().unwrap(), true, false, None);
+    let searcher = create_searcher("Test", temp_dir.path().to_str().unwrap(), true, false, None, None, false);
 
     let mut matches = Vec::new();
     for entry in WalkDir::new(temp_dir.path()).into_iter().filter_map(Result::ok) {
@@ -184,4 +190,25 @@ fn test_case_sensitive_search() {
 
     // Should find no matches since all test files use lowercase "test"
     assert_eq!(matches.len(), 0, "Should find no matches for case-sensitive 'Test'");
+}
+
+#[test]
+fn test_max_depth_limit() {
+    let temp_dir = create_test_structure();
+
+    let searcher = create_searcher("test", temp_dir.path().to_str().unwrap(), true, false, None, Some(1), false);
+    let walker = WalkDir::new(temp_dir.path()).max_depth(1); 
+
+    let mut matches = Vec::new();
+    for entry in walker.into_iter().filter_map(Result::ok) {
+        if searcher.is_allowed(&entry)
+            && searcher.name_matches(&entry)
+            && searcher.file_type_matches(&entry)
+        {
+            matches.push(entry.path().to_path_buf());
+        }
+    }
+
+    // Expect not to find nested files/directories
+    assert!(!matches.iter().any(|p| p.display().to_string().contains("nested/")));
 }
