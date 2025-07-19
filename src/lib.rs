@@ -1,5 +1,7 @@
+pub mod file_Searcher;
+
 use clap::Parser;
-pub mod file_searcher;
+
 
 #[derive(Parser, Debug)]
 #[command(author, version, about)]
@@ -22,6 +24,10 @@ pub struct Args {
     /// Specific file types
     #[arg(short = 't', long = "file-type")]
     pub file_type: Option<String>,
+
+    /// Max Depth that it will go to
+    #[arg(short = 'm', long = "max-depth")]
+    max_depth: Option<usize>,
 }
 
 

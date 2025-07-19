@@ -1,6 +1,6 @@
 use clap::Parser;
 use ff::{Args};
-use ff::file_searcher::{FileSearcher};
+use ff::file_Searcher::{FileSearcher};
 
 /// Entry point of the program. Parses CLI arguments and initiates the search.
 fn main() {
