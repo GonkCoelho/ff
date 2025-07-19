@@ -29,19 +29,26 @@ fn main() {
     println!("Searching for: {}", args.filename);
     println!("Starting in: {}", args.path);
 
-    //Saving the variables 
-    let filename = args.filename;
-    let starting_dir = args.path;
-
-    // Cycling 
-    for entry in WalkDir::new(starting_dir)
+    for entry in WalkDir::new(&args.path)
         .into_iter()
         .filter_map(Result::ok)
-        .filter(|e| e.file_type().is_file())
     {
-        if let Some(file_name) = entry.path().file_name().and_then(|n| n.to_str()) {
-            if file_name.contains(&filename) {
-                println!("{}", entry.path().display());
+        let is_file = entry.file_type().is_file();
+        let is_dir = entry.file_type().is_dir();
+
+        let should_include = if args.only_dirs {
+            is_dir
+        } else if args.include_dirs {
+            is_file || is_dir
+        } else {
+            is_file
+        };
+
+        if should_include {
+            if let Some(name) = entry.path().file_name().and_then(|n| n.to_str()) {
+                if name.contains(&args.filename) {
+                    println!("{}", entry.path().display());
+                }
             }
         }
     }
