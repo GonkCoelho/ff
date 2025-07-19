@@ -56,6 +56,7 @@ cargo build --release
 To have it in the terminal
 
 https://doc.rust-lang.org/cargo/commands/cargo-install.html
+
 Note: Later will add a bash script to install and uninstall it
 ---
 
