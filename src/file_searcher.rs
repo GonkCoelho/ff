@@ -81,15 +81,17 @@ impl FileSearcher {
         }
     }
 
-    /// Executes the file search using the configured arguments.
-    ///
-    /// Recursively traverses the file system starting from the given path,
-    /// and prints out the entries that match the search criteria.
-    pub fn run(&self) {
-        println!("Searching for: {}", self.args.filename);
-        println!("Starting in: {}", self.args.path);
+    pub fn search(&self){
+        let walker = WalkDir::new(&self.args.path);
+            
 
-        for entry in WalkDir::new(&self.args.path)
+        let walker = if let Some(depth) = self.args.max_depth{
+            walker.max_depth(depth)
+        } else {
+            walker
+        };
+
+        for entry in walker
             .into_iter()
             .filter_map(Result::ok)
         {
@@ -97,5 +99,15 @@ impl FileSearcher {
                 println!("{}", entry.path().display());
             }
         }
+    }
+
+    /// Executes the file search using the configured arguments.
+    ///
+    /// Recursively traverses the file system starting from the given path,
+    /// and prints out the entries that match the search criteria.
+    pub fn run(&self) {
+        println!("Searching for: {}", self.args.filename);
+        println!("Starting in: {}", self.args.path);
+        self.search();
     }
 }

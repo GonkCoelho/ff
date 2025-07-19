@@ -26,7 +26,7 @@ pub struct Args {
     pub file_type: Option<String>,
 
     /// Max Depth that it will go to
-    #[arg(short = 'm', long = "max-depth")]
+    #[arg(short = 'M', long = "max-depth")]
     max_depth: Option<usize>,
 }
 
