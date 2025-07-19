@@ -1,6 +1,6 @@
 [package]
 name = "ff"
-version = "0.1.0"
+version = "0.2.0"
 edition = "2024"
 license = "MIT OR Apache-2.0"
 rust-version = "1.88.0"
@@ -13,7 +13,6 @@ path = "src/main.rs"
 clap = { version = "4.5", features = ["derive"] }
 walkdir = "2.4"
 tempfile = "3.0"
-clap_complete = "4.5.55"
 
 
 [dev-dependencies]
