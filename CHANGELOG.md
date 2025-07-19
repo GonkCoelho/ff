@@ -21,6 +21,10 @@ straightforward as possible.
 
 ## [0.2.0]
 
+## Added
+- Case Insensitive
+- Max depth search
+
 ### Changed
 - Logic to be more Object oriented for easier approach later
 - Test implementation
